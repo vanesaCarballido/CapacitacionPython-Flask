@@ -87,7 +87,7 @@ def GetListaFavoritos():
 
 
 #Buscar pokemon: metodo GET, atributos (uno opcional) (pokemon, tipo)
-
+ 
     
     
         
