@@ -8,7 +8,7 @@ Utilicé una API (Pokemón) en Flask y con Python cree los endpoints para utiliz
 
 _________________________________
 
-## 💙  ¿Qué hace mi proyecto de Horoscopo Pokemón? 
+## 💚  ¿Qué hace mi proyecto de Horoscopo Pokemón? 
 
 ✨ Calcula, según tu fecha de nacimiento, tu signo del Zodíaco y te asigna el Pokemón que corresponde al mismo.
 
@@ -20,12 +20,25 @@ _________________________________
 
 _______________
 
-## 💙 Endpoints que utilizo en el proyecto: 
-GET, POST, DELETE
+## 💙 Ejecución con Docker:
 
 __________________________
-## 🟣 Ejecutarlo: en consola:
+## 💜 Ejecución por consola:
+-Clonar repositorio
 
-Activar venv
+-Instalar flask
 
-python -m app.main
+-Activar el venv
+
+-Escribir "python -m app.main" 
+
+Se tendría que mostrar esto al terminar todos los pasos:
+
+<img width="500" height="400" alt="Captura de pantalla 2025-07-24 182831" src="https://github.com/user-attachments/assets/d7af8a44-c96c-4c39-a62e-eefb0dfa16b1" />
+
+## Uso de endpoints en postman:
+_GET:_
+
+_POST_
+
+_DELETE:_
