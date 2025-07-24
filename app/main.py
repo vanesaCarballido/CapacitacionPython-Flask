@@ -1,94 +1,159 @@
-from flask import Flask, request, jaonify
+from flask import Flask, request, jsonify
 from datetime import datetime
-from app.services.horoscopos import calculoHoroscopoPokemon #para poder usar el metodo
-from app.services.pokemon import obtenerPokemon, existePokemon,pokemonesDelTipo
 
-app= Flask(__name__)
+from app.services.horoscopos import calculoHoroscopoPokemon
+from app.services.pokemon import obtenerPokemon, existePokemon, pokemonesDelTipo
 
-#Horoscopo pokemon: metodo POST atributos (usuario, fecha)
-@app.route("/horoscopo", methods=["Post"])
+app = Flask(__name__)
+
+favoritos = {}
+idProximo = 1
+
+@app.route("/horoscopo", methods=["POST"])
 def PostHoroscopo():
-    datos= request.get_json() or {}
-    usuario= datos.get("usuario","").strip() #strip elimina espacios en blanco
-    fecha= datos.get("fecha","").strip()
+    datos = request.get_json() or {}
+    usuario = datos.get("usuario", "").strip()
+    fecha = datos.get("fecha", "").strip()
 
-    if not usuario or not fecha:
-        if not usuario:
-            return jsonify({"Falta ingresar el nombre"})
-        if not usuario:
-            return jsonify({"Falta ingresar la fecha"})
-    else:
-        try: 
-            fecha.datetime,strptime(fecha, "%Y-%m-%d").date
+    if not usuario:
+        return jsonify({"error": "Falta ingresar el nombre"}), 400
+    if not fecha:
+        return jsonify({"error": "Falta ingresar la fecha"}), 400
 
-        except: 
-            return jsonify ({"Formato de fecha inválido"})
-    pokemonHoroscopo=calculoHoroscopoPokemon(fecha)
-    if not pokemonHoroscopo:
-        return ({"Ha ocurrido un error al buscar el pokemón"})
-    else:
-        try:
-            fichaPokemon= obtenerPokemon(pokemonHoroscopo)
-        except:
-            return jsonify({"Pokemon no valido"})
-        
-    return jsonify({"Usuario": usuario, "Signo": pokemonHoroscopo ,"Pokemón": fichaPokemon})
+    try:
+        fecha_dt = datetime.strptime(fecha, "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({"error": "Formato de fecha inválido"}), 400
+
+    resultado = calculoHoroscopoPokemon(fecha)
+    if not resultado:
+        return jsonify({"error": "No se pudo calcular el horóscopo"}), 400
+
+    signo, nombrePokemon = resultado
+    try:
+        ficha = obtenerPokemon(nombrePokemon)
+    except:
+        return jsonify({"error": "Error al obtener los datos del Pokémon"}), 500
+
+    return jsonify({
+        "usuario": usuario,
+        "signo": signo,
+        "pokemon": ficha
+    })
 
 
-#Favoritos: agregar, eliminar y buscar
-favoritos={}
-idProximo=1
-
-#Guardar favoritos:  metodo POST atributos (usuario, pokemon)
 @app.route("/favoritos", methods=["POST"])
 def PostGuardarFavorito():
     global idProximo
-    datos= request.get_json() or {}
-    usuario= datos.get("usuario",""),strip()
-    pokemon= datos.get("pokemon",""),strip()
-    if not user:
-        return jsonify({"Falta ingresar el usuario"})
+    datos = request.get_json() or {}
+    usuario = datos.get("usuario", "").strip()
+    pokemon = datos.get("pokemon", "").strip()
+
+    if not usuario:
+        return jsonify({"error": "Falta ingresar el usuario"}), 400
     if not pokemon:
-        return jsonify({"Falta ingresar el nombre del pokemon"})
+        return jsonify({"error": "Falta ingresar el nombre del pokemon"}), 400
     if not existePokemon(pokemon):
-        return jsonify ({"El nombre del pokemon no existe"})
-    favorito= {"id":idProximo, "nombre":pokemon}
-    favoritos.setdefault(user,[].append(favorito))
-    idProximo+=1
-    return jsonify ({"SLa lista de ", usuario ,"se ha actualizado:" ,favoritos[usuario]})
+        return jsonify({"error": "El nombre del pokemon no existe"}), 404
+
+    favorito = {"id": idProximo, "nombre": pokemon}
+    if usuario not in favoritos:
+        favoritos[usuario] = []
+    favoritos[usuario].append(favorito)
+    idProximo += 1
+
+    return jsonify({f"favoritos de {usuario}": favoritos[usuario]})
 
 
-#Eliminar favorito: metodo DELETE, atributos (usuario, id)
 @app.route("/favoritos", methods=["DELETE"])
 def DeleteFavorito():
-    datos= request.get_json() or {}
-    usuario= datos.get("usuario",""),strip()
-    id= datos.get("id",""),strip()
+    datos = request.get_json() or {}
+    usuario = datos.get("usuario", "").strip()
+    id_str = datos.get("id", "").strip()
+
     if usuario not in favoritos:
-        return jsonify({False}),404
-    antes=len(favoritos[usuario])
-    favoritos[usuario]=[f for f in favoritos[usuario] if ["id"]!= id]
-    return jsonify({len(favoritos[usuario]<antes)}) #si es menor que antes entonces e eliminó correctamente
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    try:
+        idBusqueda = int(id_str)
+    except ValueError:
+        return jsonify({"error": "El id debe ser un número"}), 400
+
+    antes = len(favoritos[usuario])
+    favoritos[usuario] = [f for f in favoritos[usuario] if f["id"] != idBusqueda]
+    eliminado = len(favoritos[usuario]) < antes
+
+    return jsonify({"eliminado": eliminado})
 
 
-#Listar los favoritos: metodo GET, atributos (usuario)
-@app.route("/favoritos", methods=["DELETE"])
+@app.route("/favoritos", methods=["GET"])
 def GetListaFavoritos():
-    datos= request.get_json() or {}
-    usuario= datos.get("usuario",""),strip()
-    if usuario not in favoritos:
-        return jsonify({"No tenes lista de favoritos"}) 
+    datos = request.get_json() or {}
+    usuario = datos.get("usuario", "").strip()
+
     if not usuario:
-        return jsonify({"Tenes que ingresar el usuario"})
-    return jsonify({"Los favoritos de", usuario, "son: ", favoritos[usuario]})
+        return jsonify({"error": "Tenés que ingresar el usuario"}), 400
+    if usuario not in favoritos:
+        return jsonify({"error": "No tenés lista de favoritos"}), 404
+
+    return jsonify({"favoritos": favoritos[usuario]})
 
 
-#Buscar entre los favoritos: metodo GET, atributos (usuario, id)
+@app.route("/favoritos/id", methods=["GET"])
+def GetFavoritoPorID():
+    datos = request.get_json() or {}
+    usuario = datos.get("usuario", "").strip()
+    id_str = datos.get("id", "").strip()
+
+    if not usuario or not id_str:
+        return jsonify({"error": "Faltan datos"}), 400
+    if usuario not in favoritos:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    try:
+        idBusqueda = int(id_str)
+    except ValueError:
+        return jsonify({"error": "El id debe ser un número"}), 400
+
+    for fav in favoritos[usuario]:
+        if fav["id"] == idBusqueda:
+            return jsonify({"resultado": fav})
+
+    return jsonify({"error": f"No se encontró el Pokémon con id {idBusqueda}"}), 404
 
 
-#Buscar pokemon: metodo GET, atributos (uno opcional) (pokemon, tipo)
- 
-    
-    
-        
+@app.route("/pokemon", methods=["GET"])
+def GetBuscarPokemon():
+    datos = request.get_json() or {}
+    pokemon = datos.get("pokemon", "").strip()
+    tipo = datos.get("tipo", "").strip()
 
+    if not pokemon and not tipo:
+        return jsonify({"error": "Se debe ingresar al menos un dato"}), 400
+
+    if pokemon and tipo:
+        try:
+            lista = pokemonesDelTipo(tipo)
+            if pokemon not in lista:
+                lista.append(pokemon)
+            return jsonify({"resultado": lista})
+        except:
+            return jsonify({"error": "Alguno de los datos no es válido"}), 400
+
+    if pokemon:
+        try:
+            return jsonify({"resultado": obtenerPokemon(pokemon)})
+        except:
+            return jsonify({"error": "El nombre del pokemón no es válido"}), 400
+
+    if tipo:
+        try:
+            lista = pokemonesDelTipo(tipo)
+            return jsonify({"resultado": lista})
+        except:
+            return jsonify({"error": "El tipo del pokemón no es válido"}), 400
+
+
+if __name__ == "__main__":
+    print(" Iniciando en http://127.0.0.1:5000")
+    app.run(debug=True)

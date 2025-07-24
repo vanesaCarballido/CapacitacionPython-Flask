@@ -1,8 +1,12 @@
 
-FROM python:3.10-slim
+FROM node:18-alpine
 WORKDIR /app
-COPY . /app
-RUN pip install -r requirements.txt
-EXPOSE 5000
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+
+
 
 CMD ["python", "HoroscopoPokemon.py"] direccion
+#preguntar si está bien
