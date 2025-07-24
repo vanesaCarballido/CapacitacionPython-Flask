@@ -73,9 +73,8 @@ def GetCancionDe1D():
     cancion = SignosCanciones.get(signo, "Canción no asignada")
 
     return jsonify({
-        "Signo": signo,
-        "Pokemon del dia": ficha,
-        "Cancion del diade One Direction": cancion
+        "Tu Pokemón del dia es": nombrePokemon,
+        "Tu canción del dia de One Direction es": cancion
     })
 
 #POST /favoritos: guarda un pokemon a tu lista de favoritos (usuario, pokemon) 
