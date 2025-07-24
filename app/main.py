@@ -8,12 +8,13 @@ from app.services.pokemon import obtenerPokemon, existePokemon, pokemonesDelTipo
 
 app = Flask(__name__)
 
-#Global para poder guardar datos (para usar en favoritos especialmente)
+#Global para poder guardar datos (para usar en favoritos)
 favoritos = {}
 idProximo = 1
 
 
-#POST /horoscopo: calcula el pokemon que sos segun tu dia de nacimiento, tu signo zodiacal (usuario, fecha)
+#POST /horoscopo: calcula el pokemon que sos segun tu dia de nacimiento, tu signo zodiacal 
+#(usuario, fecha)
 @app.route("/horoscopo", methods=["POST"])
 def PostHoroscopo():
     datos = request.get_json() or {}
@@ -39,7 +40,7 @@ def PostHoroscopo():
     try:
         ficha = obtenerPokemon(nombrePokemon)
     except:
-        return jsonify({"error": "no se han podido obtener los datos del Pokémon"}), 500
+        return jsonify({"error": "no se han podido obtener los datos del Pokémon"}), 400
 
     return jsonify({
         "usuario": usuario,
@@ -48,15 +49,18 @@ def PostHoroscopo():
     })
 
 
-#GET /cancion: devuelve tu nombre, un pokemon del dia y una cancion de One Direction del dia (usuario,fecha)
-
+#GET /cancion: devuelve tu nombre, un pokemon del dia y una cancion de One Direction del dia 
+# (usuario,fecha)
 @app.route("/cancion", methods=["GET"])
 def GetCancionDe1D():
     datos = request.get_json() or {}
+    usuario= (datos.get("usuario","").strip()).lower()
     fecha = datos.get("fecha", "").strip()
 
     if not fecha:
         return jsonify({"error": "Falta ingresar la fecha"}), 400
+    if not usuario:
+         return jsonify({"error": "Falta ingresar la fecha"}), 400
     try:
         fechaValida = datetime.strptime(fecha, "%Y-%m-%d").date()
     except ValueError:
@@ -73,11 +77,13 @@ def GetCancionDe1D():
     cancion = SignosCanciones.get(signo, "Canción no asignada")
 
     return jsonify({
+        "Hola":usuario,
         "Tu Pokemón del dia es": nombrePokemon,
         "Tu canción del dia de One Direction es": cancion
     })
 
-#POST /favoritos: guarda un pokemon a tu lista de favoritos (usuario, pokemon) 
+#POST /favoritos: guarda un pokemon a tu lista de favoritos 
+#(usuario, pokemon) 
 @app.route("/favoritos", methods=["POST"])
 def PostGuardarFavorito():
     global idProximo
@@ -110,7 +116,8 @@ def PostGuardarFavorito():
     })
 
 
-#DELETE /favoritos: borrar un pokemon de la lista de favoritos (usuario, id)
+#DELETE /favoritos: borrar un pokemon de la lista de favoritos 
+#(usuario, id)
 @app.route("/favoritos", methods=["DELETE"])
 def DeleteFavorito():
     datos = request.get_json() or {}
@@ -131,7 +138,8 @@ def DeleteFavorito():
     return jsonify({"eliminado": eliminado})
 
 
-#GET /favoritos: despliega la lista de favoritos con su nombre e id (usuario)
+#GET /favoritos: despliega la lista de favoritos con su nombre e id 
+#(usuario)
 @app.route("/favoritos", methods=["GET"])
 def GetListaFavoritos():
     datos = request.get_json() or {}
@@ -145,7 +153,8 @@ def GetListaFavoritos():
     return jsonify({"favoritos": favoritos[usuario]})
 
 
-#GET /favoritos/id: devuelve el pokemon favorito según id (usuario, id)
+#GET /favoritos/id: devuelve el pokemon favorito según id 
+#(usuario, id)
 @app.route("/favoritos/id", methods=["GET"])
 def GetFavoritoPorID():
     datos = request.get_json() or {}
@@ -167,7 +176,8 @@ def GetFavoritoPorID():
 
     return jsonify({"error": f"No se encontró el Pokémon con id {idBusqueda}"}), 404
 
-#GET /pokemon: busca el pokemon segun nombre, tipo o ambos y devuelve una lista con todos (pokemon, tipo)
+#GET /pokemon: busca el pokemon segun nombre, tipo o ambos y devuelve una lista con todos 
+#(pokemon, tipo)
 @app.route("/pokemon", methods=["GET"])
 def GetBuscarPokemon():
     datos = request.get_json() or {}
@@ -198,6 +208,7 @@ def GetBuscarPokemon():
             return jsonify({"error": "El tipo del pokemón no es válido"}), 400
 
 
+#Puerto
 if __name__ == "__main__":
     print(" Iniciando en http://0.0.0.0:5000")
     app.run(debug=True, host="0.0.0.0", port=5000)
