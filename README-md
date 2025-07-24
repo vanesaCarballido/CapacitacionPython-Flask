@@ -1,3 +1,4 @@
 para iniciar activar el venv:  C:/Users/Estudiante UCU/horoscopo_pokemon/venv/Scripts/Activate.ps1"
 luego de activado el venv escribir: python -m app.main  
 ir a postman
+http://127.0.0.1:500 funciona en todas las maquinas porque lo hice general

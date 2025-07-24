@@ -2,13 +2,15 @@ import requests
 
 URL = "https://pokeapi.co/api/v2"
 
+#Devuelve si existe o no el pokemon segun el nombre
 def existePokemon(nombre: str) -> bool:
     try:
         respuesta = requests.get(f"{URL}/pokemon/{nombre.lower()}")
-        return respuesta.status_code == 200
+        return respuesta.status_code ==200
     except:
         return False
 
+#Devuelve datos del pokemon segun su nombre
 def obtenerPokemon(nombre: str) -> dict:
     nombre = nombre.lower()
     respuesta = requests.get(f"{URL}/pokemon/{nombre}")
@@ -23,6 +25,8 @@ def obtenerPokemon(nombre: str) -> dict:
         "Habilidades": [h["ability"]["name"] for h in data["abilities"]]
     }
 
+
+#Devuelve lista de pokemones segun el tipo
 def pokemonesDelTipo(tipo: str) -> list:
     respuesta = requests.get(f"{URL}/type/{tipo.lower()}")
     respuesta.raise_for_status()

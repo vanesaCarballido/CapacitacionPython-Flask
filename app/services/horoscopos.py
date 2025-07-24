@@ -15,7 +15,7 @@ Signos = [
     ("Piscis",       (date(2004, 2, 19), date(2004, 3, 20)))
 ]
 
-SignosPokemon = {
+SignosPokemon= {
     "Cáncer": "psyduck",
     "Escorpio": "lapras",
     "Piscis": "squirtle", 
@@ -23,17 +23,34 @@ SignosPokemon = {
     "Virgo": "cubone",
     "Capricornio": "wooper",
     "Aries": "charmander",
-    "Leo": "ponyta",
-    "Sagitario": "numel",
+    "Leo": "numel",
+    "Sagitario": "ponyta",
     "Géminis": "pidgey",
     "Libra": "zubat",
     "Acuario": "natu"
-}
+    }
 
-def calculoHoroscopoPokemon(fecha: str) -> tuple:
-    fechaArreglo = date.fromisoformat(fecha)
-    fechaNueva = fechaArreglo.replace(year=2004)
+SignosCanciones={
+    "Cáncer": "What Makes You Beautiful",
+    "Escorpio":"Story of My Life",
+    "Piscis":"Drag Me Down",
+    "Tauro":"Little Things",
+    "Virgo":"Steal My Girl",
+    "Capricornio":"One Thing",
+    "Aries":"Night Changes",
+    "Leo":"Live While We're Young",
+    "Sagitario":"No Control",
+    "Géminis":"Best Song Ever",
+    "Libra":"Perfect",
+    "Acuario":"History",
+    }
+
+#Calcula la fecha arreglada para que se pueda utilizar en el calculo de signos y luego en signosPokemon
+def calculoHoroscopoPokemon(fecha: str) ->tuple:
+    fechaFormaBien= date.fromisoformat(fecha)
+    fechaArreglada = fechaFormaBien.replace(year=2004)
     for signo, (inicio, fin) in Signos:
-        if inicio <= fechaNueva <= fin:
+        if inicio <= fechaArreglada <= fin:
             return signo, SignosPokemon.get(signo)
     return None
+
