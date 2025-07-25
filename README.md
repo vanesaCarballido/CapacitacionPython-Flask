@@ -26,7 +26,7 @@ _______________
 
 Al terminar los pasos la consola tendría que mostrar esto y el Docker ejecutarse correctamente
 
-<img width="500" height="165" alt="Captura de pantalla 2025-07-24 212336" src="https://github.com/user-attachments/assets/76a8a345-794c-4aae-9f44-eeab26a15ee9" />
+<img width="500" height="388" alt="Captura de pantalla 2025-07-25 102120" src="https://github.com/user-attachments/assets/dd447b84-b6f4-4d77-8ce5-38aafa70db2d" />
 
 __________________________
 ## 💜 Ejecución por consola:
