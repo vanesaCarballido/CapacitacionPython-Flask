@@ -82,6 +82,7 @@ def GetCancionDe1D():
         "Tu canción del dia de One Direction es": cancion
     })
 
+
 #POST /favoritos: guarda un pokemon a tu lista de favoritos 
 #(usuario, pokemon) 
 @app.route("/favoritos", methods=["POST"])
@@ -175,6 +176,7 @@ def GetFavoritoPorID():
             return jsonify({"resultado": fav})
 
     return jsonify({"error": f"No se encontró el Pokémon con id {idBusqueda}"}), 404
+
 
 #GET /pokemon: busca el pokemon segun nombre, tipo o ambos y devuelve una lista con todos 
 #(pokemon, tipo)
