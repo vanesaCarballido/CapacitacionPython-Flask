@@ -22,22 +22,46 @@ _______________
 
 ## 💙 Ejecución con Docker:
 
+-Instalar Flask
+
+-Escribir "docker-compose up --build" en la consola
+
+Al terminar los pasos la consola tendría que mostrar esto y el Docker ejecutarse correctamente
+
+<img width="500" height="165" alt="Captura de pantalla 2025-07-24 212336" src="https://github.com/user-attachments/assets/76a8a345-794c-4aae-9f44-eeab26a15ee9" />
+
 __________________________
 ## 💜 Ejecución por consola:
 -Clonar repositorio
 
--Instalar flask
+-Instalar Flask
 
 -Activar el venv
 
--Escribir "python -m app.main" 
+-Escribir "python -m app.main" en la consola
 
 Se tendría que mostrar esto al terminar todos los pasos:
 
 <img width="500" height="400" alt="Captura de pantalla 2025-07-24 182831" src="https://github.com/user-attachments/assets/d7af8a44-c96c-4c39-a62e-eefb0dfa16b1" />
 
 ## Uso de endpoints en postman:
-_GET:_
+#GET /pokemon: busca el pokemon segun nombre, tipo o ambos y devuelve una lista con todos 
+#(pokemon, tipo) 
+#GET /favoritos/id: devuelve el pokemon favorito según id 
+#(usuario, id)
+#GET /favoritos: despliega la lista de favoritos con su nombre e id 
+#(usuario)
+#DELETE /favoritos: borrar un pokemon de la lista de favoritos 
+#(usuario, id)
+#POST /favoritos: guarda un pokemon a tu lista de favoritos 
+#(usuario, pokemon) 
+
+#GET /cancion: devuelve tu nombre, un pokemon del dia y una cancion de One Direction del dia 
+# (usuario,fecha)
+#POST /horoscopo: calcula el pokemon que sos segun tu dia de nacimiento, tu signo zodiacal 
+#(usuario, fecha)
+_GET:_ 
+/
 
 _POST_
 
