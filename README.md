@@ -1,6 +1,4 @@
-# Capacitación Python-flask 
-
-🌸 Vanesa Carballido 🌸 
+# Vanesa Carballido : capacitación Python-flask 
 
 _Proyecto:_
 
@@ -16,7 +14,7 @@ _________________________________
 
 ✨ Puede buscar Pokemones según su tipo (en inglés por la API), por su nombre o ambas opciones, en caso de elegir ambas se retorna el Pokemon y todos los Pokemones del tipo ingresados juntos en una lista.
 
-✨ Calcula un Pokemón y una canción de One Direction del día ingresado para el usuario ingresado.
+✨ Calcula un Pokemón y una canción de One Direction del día para el usuario ingresado.
 
 _______________
 
@@ -45,24 +43,39 @@ Se tendría que mostrar esto al terminar todos los pasos:
 <img width="500" height="400" alt="Captura de pantalla 2025-07-24 182831" src="https://github.com/user-attachments/assets/d7af8a44-c96c-4c39-a62e-eefb0dfa16b1" />
 
 ## Uso de endpoints en postman:
-#GET /pokemon: busca el pokemon segun nombre, tipo o ambos y devuelve una lista con todos 
-#(pokemon, tipo) 
-#GET /favoritos/id: devuelve el pokemon favorito según id 
-#(usuario, id)
-#GET /favoritos: despliega la lista de favoritos con su nombre e id 
-#(usuario)
-#DELETE /favoritos: borrar un pokemon de la lista de favoritos 
-#(usuario, id)
-#POST /favoritos: guarda un pokemon a tu lista de favoritos 
-#(usuario, pokemon) 
+Base: http://0.0.0.0:5000
 
-#GET /cancion: devuelve tu nombre, un pokemon del dia y una cancion de One Direction del dia 
-# (usuario,fecha)
-#POST /horoscopo: calcula el pokemon que sos segun tu dia de nacimiento, tu signo zodiacal 
-#(usuario, fecha)
-_GET:_ 
-/
+### _GET:_ 
 
-_POST_
+🌸 _/pokemon_:  devuelve una lista con el pokemon ingresado, todos los Pokemones del tipo ingresado o ambas unidas.
 
-_DELETE:_
+⇨ body: {"pokemon":"nombrePokemon", ""tipo":"tipoPokemones"} (opcional al menos uno)
+
+🌸 _/favoritos_ : devuelve la lista de favoritos del usuario ingresado, con nombre de los pokemones e id de cada uno.
+
+⇨ body: {"usuario":"nombre"} 
+
+🌸 _/favoritos/id_ : devuelve la información del Pokemón.
+
+⇨ body: {"usuario":"nombre","id":"idDelPokemonFavorito"}
+
+🌸 _/cancion_ : te asgina un pokemon y una canción del dia utilizando el horoscopo.
+
+⇨ body: {"usuario":"nombre", "fecha": "yyyy-mm-dd"}
+
+### _POST_
+
+🌸 _/favoritos_ : guarda un Pokemón a tu lista de favoritos. 
+
+⇨ body: ("usuario":"nombre", "pokemon":"nombreDelPokemon") 
+
+🌸 _/horoscopo_ : calcula el Pokemón que sos según tu día de nacimiento y tu signo zodiacal. 
+
+⇨ body: ("usuario,": "nombre","fecha":"yyyy-mm-dd")
+
+### _DELETE:_
+
+🌸 _/favoritos_ : elimina el Pokemón de tu lista de favoritos.
+
+⇨ body: {"usuario":"nombre", "id":"idDelPokemonFavorito"}
+
